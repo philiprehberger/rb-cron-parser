@@ -83,8 +83,8 @@ Philiprehberger::CronParser.new('0 0 1 * *')       # first of month
 
 ```bash
 bundle install
-bundle exec rspec      # Run tests
-bundle exec rubocop    # Check code style
+bundle exec rspec
+bundle exec rubocop
 ```
 
 ## License
