@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/rb-cron-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/rb-cron-parser/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-cron_parser.svg)](https://rubygems.org/gems/philiprehberger-cron_parser)
 [![License](https://img.shields.io/github/license/philiprehberger/rb-cron-parser)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Cron expression parser for calculating next and previous occurrences
 
