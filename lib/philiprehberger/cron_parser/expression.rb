@@ -14,8 +14,13 @@ module Philiprehberger
         weekday: { min: 0, max: 6 }
       }.freeze
 
-      WEEKDAY_NAMES = { 'minute' => nil, 'hour' => nil, 'day' => nil, 'month' => nil,
-                        'weekday' => nil }.freeze
+      FIELD_NAMES_MAP = {
+        minute: nil,
+        hour: nil,
+        day: nil,
+        month: Field::MONTH_NAMES,
+        weekday: Field::WEEKDAY_NAMES
+      }.freeze
 
       HUMAN_LABELS = {
         minute: 'minute',
@@ -37,7 +42,7 @@ module Philiprehberger
 
         @fields = {}
         FIELD_RANGES.each_with_index do |(name, range), index|
-          @fields[name] = Field.new(parts[index], **range)
+          @fields[name] = Field.new(parts[index], min: range[:min], max: range[:max], names: FIELD_NAMES_MAP[name])
         end
       end
 
@@ -99,6 +104,11 @@ module Philiprehberger
         parts << weekday_description
         parts.compact.join(', ')
       end
+
+      # Alias for human_readable
+      #
+      # @return [String]
+      alias description human_readable
 
       private
 
