@@ -113,7 +113,7 @@ module Philiprehberger
           current += step
         end
 
-        raise Error, "No matching time found within 4 years"
+        raise Error, 'No matching time found within 4 years'
       end
 
       def round_to_minute(time)

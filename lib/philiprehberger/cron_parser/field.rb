@@ -39,12 +39,12 @@ module Philiprehberger
         case part
         when '*'
           (@min..@max).to_a
-        when /\A\*\/(\d+)\z/
+        when %r{\A\*/(\d+)\z}
           step = Regexp.last_match(1).to_i
           raise Error, "Invalid step: #{step}" if step.zero?
 
           (@min..@max).step(step).to_a
-        when /\A(\d+)-(\d+)(?:\/(\d+))?\z/
+        when %r{\A(\d+)-(\d+)(?:/(\d+))?\z}
           range_start = Regexp.last_match(1).to_i
           range_end = Regexp.last_match(2).to_i
           step = Regexp.last_match(3)&.to_i || 1
@@ -68,7 +68,7 @@ module Philiprehberger
       end
 
       def validate_value!(value)
-        return if value >= @min && value <= @max
+        return if value.between?(@min, @max)
 
         raise Error, "Value #{value} out of range (#{@min}-#{@max})"
       end
