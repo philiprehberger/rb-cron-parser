@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Cron expression parser for calculating next and previous occurrences'
   spec.description = 'Parse standard 5-field cron expressions and calculate next/previous occurrences, ' \
-                       'match times against patterns, and generate human-readable descriptions.'
+                     'match times against patterns, and generate human-readable descriptions.'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-cron_parser'
   spec.license = 'MIT'
 
