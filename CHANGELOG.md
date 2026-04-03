@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-03
+
+### Added
+- Named month support (JAN-DEC) in cron expressions
+- Named weekday support (SUN-SAT) in cron expressions
+- `valid?` method for non-raising expression validation
+- `validate` method returning structured field-level errors
+- `description` alias for `human_readable`
+
 ## [0.1.5] - 2026-03-31
 
 ### Added
