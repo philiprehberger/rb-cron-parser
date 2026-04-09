@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-09
+
+### Added
+- Named cron aliases (`@hourly`, `@daily`, `@midnight`, `@weekly`, `@monthly`, `@yearly`, `@annually`) with case-insensitive matching
+- `valid?` and `validate` now accept alias expressions
+
 ## [0.2.0] - 2026-04-03
 
 ### Added
