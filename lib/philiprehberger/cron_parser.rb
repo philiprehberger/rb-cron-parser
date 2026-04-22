@@ -37,6 +37,12 @@ module Philiprehberger
     def self.validate(expr)
       errors = []
       stripped = expr.strip
+      if stripped.start_with?('@')
+        alias_expanded = Expression::ALIASES[stripped.downcase]
+        return { valid: false, errors: ["Unknown cron alias: #{stripped}"] } if alias_expanded.nil?
+
+        stripped = alias_expanded
+      end
       parts = stripped.split(/\s+/)
 
       unless parts.size == 5

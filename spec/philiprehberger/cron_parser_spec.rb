@@ -386,6 +386,86 @@ RSpec.describe Philiprehberger::CronParser do
     end
   end
 
+  describe 'cron aliases' do
+    it 'expands @hourly' do
+      expr = described_class.new('@hourly')
+      expect(expr.expression).to eq('0 * * * *')
+      expect(expr.matches?(Time.new(2026, 4, 9, 14, 0, 0))).to be true
+      expect(expr.matches?(Time.new(2026, 4, 9, 14, 1, 0))).to be false
+    end
+
+    it 'expands @daily to midnight' do
+      expr = described_class.new('@daily')
+      expect(expr.matches?(Time.new(2026, 4, 9, 0, 0, 0))).to be true
+      expect(expr.matches?(Time.new(2026, 4, 9, 1, 0, 0))).to be false
+    end
+
+    it 'expands @midnight as alias for @daily' do
+      expect(described_class.new('@midnight').expression).to eq('0 0 * * *')
+    end
+
+    it 'expands @weekly to Sunday midnight' do
+      expr = described_class.new('@weekly')
+      sunday = Time.new(2026, 4, 12, 0, 0, 0)
+      monday = Time.new(2026, 4, 13, 0, 0, 0)
+      expect(expr.matches?(sunday)).to be true
+      expect(expr.matches?(monday)).to be false
+    end
+
+    it 'expands @monthly to first of month midnight' do
+      expr = described_class.new('@monthly')
+      expect(expr.matches?(Time.new(2026, 5, 1, 0, 0, 0))).to be true
+      expect(expr.matches?(Time.new(2026, 5, 2, 0, 0, 0))).to be false
+    end
+
+    it 'expands @yearly' do
+      expr = described_class.new('@yearly')
+      expect(expr.expression).to eq('0 0 1 1 *')
+      expect(expr.matches?(Time.new(2026, 1, 1, 0, 0, 0))).to be true
+      expect(expr.matches?(Time.new(2026, 2, 1, 0, 0, 0))).to be false
+    end
+
+    it 'expands @annually as alias for @yearly' do
+      expect(described_class.new('@annually').expression).to eq('0 0 1 1 *')
+    end
+
+    it 'is case-insensitive' do
+      expect(described_class.new('@DAILY').expression).to eq('0 0 * * *')
+      expect(described_class.new('@Hourly').expression).to eq('0 * * * *')
+    end
+
+    it 'raises for unknown alias' do
+      expect { described_class.new('@never') }.to raise_error(described_class::Error, /Unknown cron alias/)
+    end
+
+    it 'valid? returns true for aliases' do
+      expect(described_class.valid?('@daily')).to be true
+      expect(described_class.valid?('@hourly')).to be true
+    end
+
+    it 'valid? returns false for unknown alias' do
+      expect(described_class.valid?('@never')).to be false
+    end
+
+    it 'validate returns valid for known alias' do
+      result = described_class.validate('@weekly')
+      expect(result[:valid]).to be true
+      expect(result[:errors]).to be_empty
+    end
+
+    it 'validate returns error for unknown alias' do
+      result = described_class.validate('@never')
+      expect(result[:valid]).to be false
+      expect(result[:errors].first).to match(/Unknown cron alias/)
+    end
+
+    it 'supports #next with alias' do
+      expr = described_class.new('@daily')
+      from = Time.new(2026, 4, 9, 12, 0, 0)
+      expect(expr.next(from: from)).to eq(Time.new(2026, 4, 10, 0, 0, 0))
+    end
+  end
+
   describe 'named months in expressions' do
     it 'matches named month JAN' do
       expr = Philiprehberger::CronParser::Expression.new('0 0 1 JAN *')

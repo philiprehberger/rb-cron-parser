@@ -30,13 +30,27 @@ module Philiprehberger
         weekday: 'day of week'
       }.freeze
 
-      # @return [String] the original expression
+      ALIASES = {
+        '@yearly' => '0 0 1 1 *',
+        '@annually' => '0 0 1 1 *',
+        '@monthly' => '0 0 1 * *',
+        '@weekly' => '0 0 * * 0',
+        '@daily' => '0 0 * * *',
+        '@midnight' => '0 0 * * *',
+        '@hourly' => '0 * * * *'
+      }.freeze
+
+      # @return [String] the original (post-alias expansion) expression
       attr_reader :expression
 
-      # @param expr [String] a 5-field cron expression
+      # @param expr [String] a 5-field cron expression or named alias (e.g. "@daily")
       # @raise [Error] if the expression is invalid
       def initialize(expr)
-        @expression = expr.strip
+        stripped = expr.strip
+        stripped = ALIASES[stripped.downcase] if stripped.start_with?('@')
+        raise Error, "Unknown cron alias: #{expr.strip}" if stripped.nil?
+
+        @expression = stripped
         parts = @expression.split(/\s+/)
         raise Error, "Expected 5 fields, got #{parts.size}: #{@expression}" unless parts.size == 5
 

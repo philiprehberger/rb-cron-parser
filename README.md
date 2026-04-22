@@ -69,6 +69,20 @@ Philiprehberger::CronParser.new('0 0 * * MON,WED,FRI') # specific days
 Philiprehberger::CronParser.new('0 0 * * 1,WED,5')     # mixed numeric and named
 ```
 
+### Named Aliases
+
+Standard crontab aliases are supported (case-insensitive):
+
+```ruby
+Philiprehberger::CronParser.new('@hourly')    # => 0 * * * *
+Philiprehberger::CronParser.new('@daily')     # => 0 0 * * *
+Philiprehberger::CronParser.new('@midnight')  # alias for @daily
+Philiprehberger::CronParser.new('@weekly')    # => 0 0 * * 0
+Philiprehberger::CronParser.new('@monthly')   # => 0 0 1 * *
+Philiprehberger::CronParser.new('@yearly')    # => 0 0 1 1 *
+Philiprehberger::CronParser.new('@annually')  # alias for @yearly
+```
+
 ### Validation
 
 ```ruby
