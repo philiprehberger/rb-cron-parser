@@ -632,5 +632,35 @@ RSpec.describe Philiprehberger::CronParser do
         expect(expr.expression).to eq('*/5  *  *  *  *')
       end
     end
+
+    describe '#count_in' do
+      it 'counts quarter-hour occurrences in a 1-hour window' do
+        expr = described_class.new('*/15 * * * *')
+        from = Time.new(2026, 4, 30, 9, 0, 0)
+        to = Time.new(2026, 4, 30, 10, 0, 0)
+        expect(expr.count_in(from: from, to: to)).to eq(5)
+      end
+
+      it 'counts hourly occurrences in a 24-hour window' do
+        expr = described_class.new('@hourly')
+        from = Time.new(2026, 4, 30, 0, 0, 0)
+        to = Time.new(2026, 5, 1, 0, 0, 0)
+        expect(expr.count_in(from: from, to: to)).to eq(25)
+      end
+
+      it 'returns 0 when the window contains no occurrences' do
+        expr = described_class.new('0 0 * * *')
+        from = Time.new(2026, 4, 30, 9, 0, 0)
+        to = Time.new(2026, 4, 30, 10, 0, 0)
+        expect(expr.count_in(from: from, to: to)).to eq(0)
+      end
+
+      it 'raises when `to` is earlier than `from`' do
+        expr = described_class.new('@hourly')
+        from = Time.new(2026, 4, 30, 10, 0, 0)
+        to = Time.new(2026, 4, 30, 9, 0, 0)
+        expect { expr.count_in(from: from, to: to) }.to raise_error(Philiprehberger::CronParser::Error)
+      end
+    end
   end
 end

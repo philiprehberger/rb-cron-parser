@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-30
+
+### Added
+- `Expression#count_in(from:, to:)` returns the number of times the expression matches within an inclusive time window — useful for capacity planning and alert tuning
+
 ## [0.3.0] - 2026-04-09
 
 ### Added

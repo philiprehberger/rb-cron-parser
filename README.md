@@ -49,6 +49,15 @@ cron.matches?(Time.new(2026, 3, 22, 9, 0, 0))  # => true
 cron.matches?(Time.new(2026, 3, 22, 10, 0, 0)) # => false
 ```
 
+### Counting Occurrences in a Window
+
+```ruby
+cron = Philiprehberger::CronParser.new('*/15 * * * *')
+from = Time.new(2026, 4, 30, 9, 0, 0)
+to   = Time.new(2026, 4, 30, 10, 0, 0)
+cron.count_in(from: from, to: to)  # => 5
+```
+
 ### Human-Readable Description
 
 ```ruby
@@ -118,6 +127,7 @@ Philiprehberger::CronParser.new('0 9 * * MON-FRI') # named weekdays
 | `Expression#next(from:)` | Calculate the next matching time |
 | `Expression#prev(from:)` | Calculate the previous matching time |
 | `Expression#next_n(n, from:)` | Calculate the next N matching times |
+| `Expression#count_in(from:, to:)` | Count occurrences within an inclusive `[from, to]` window |
 | `Expression#matches?(time)` | Check if a time matches the expression |
 | `Expression#human_readable` | Human-readable description of the expression |
 | `Expression#description` | Alias for `human_readable` |

@@ -106,6 +106,30 @@ module Philiprehberger
         results
       end
 
+      # Count occurrences within a time window [from, to].
+      #
+      # The window is inclusive on both ends; `from` is treated as the cursor's
+      # starting point so an exact match at `from` counts only if it lies on a
+      # minute boundary that the schedule fires on.
+      #
+      # @param from [Time] start of the window
+      # @param to [Time] end of the window
+      # @return [Integer] the count of occurrences in the window
+      # @raise [Error] if `to` is earlier than `from`
+      def count_in(from:, to:)
+        raise Error, '`to` must be greater than or equal to `from`' if to < from
+
+        count = 0
+        cursor = round_to_minute(from) - 60
+        loop do
+          cursor = self.next(from: cursor)
+          break if cursor > to
+
+          count += 1
+        end
+        count
+      end
+
       # Return a human-readable description of the expression
       #
       # @return [String]
