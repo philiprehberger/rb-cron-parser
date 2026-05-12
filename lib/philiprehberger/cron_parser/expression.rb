@@ -130,6 +130,32 @@ module Philiprehberger
         count
       end
 
+      # Iterate every matching time within an inclusive `[from, to]` window.
+      #
+      # When called with a block, yields each occurrence and returns `self`.
+      # Without a block, returns an `Enumerator` so callers can chain `Enumerable`
+      # methods (`take`, `lazy`, `to_a`, ...).
+      #
+      # @param from [Time] start of the window
+      # @param to [Time] end of the window
+      # @yieldparam time [Time] a matching occurrence
+      # @return [self, Enumerator] self when a block is given, otherwise an Enumerator
+      # @raise [Error] if `to` is earlier than `from`
+      def each_in(from:, to:, &block)
+        raise Error, '`to` must be greater than or equal to `from`' if to < from
+
+        return enum_for(:each_in, from: from, to: to) unless block
+
+        cursor = round_to_minute(from) - 60
+        loop do
+          cursor = self.next(from: cursor)
+          break if cursor > to
+
+          block.call(cursor)
+        end
+        self
+      end
+
       # Return a human-readable description of the expression
       #
       # @return [String]

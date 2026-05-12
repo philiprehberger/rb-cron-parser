@@ -662,5 +662,52 @@ RSpec.describe Philiprehberger::CronParser do
         expect { expr.count_in(from: from, to: to) }.to raise_error(Philiprehberger::CronParser::Error)
       end
     end
+
+    describe '#each_in' do
+      it 'yields every matching occurrence in the window' do
+        expr = described_class.new('*/15 * * * *')
+        from = Time.new(2026, 4, 30, 9, 0, 0)
+        to = Time.new(2026, 4, 30, 10, 0, 0)
+        results = []
+        expr.each_in(from: from, to: to) { |t| results << t }
+        expect(results.size).to eq(5)
+        expect(results.first).to eq(Time.new(2026, 4, 30, 9, 0, 0))
+        expect(results.last).to eq(Time.new(2026, 4, 30, 10, 0, 0))
+      end
+
+      it 'returns self when a block is given' do
+        expr = described_class.new('@hourly')
+        from = Time.new(2026, 4, 30, 0, 0, 0)
+        to = Time.new(2026, 4, 30, 2, 0, 0)
+        expect(expr.each_in(from: from, to: to) { |_t| }).to be(expr)
+      end
+
+      it 'returns an Enumerator when no block is given' do
+        expr = described_class.new('@hourly')
+        from = Time.new(2026, 4, 30, 0, 0, 0)
+        to = Time.new(2026, 4, 30, 2, 0, 0)
+        e = expr.each_in(from: from, to: to)
+        expect(e).to be_a(Enumerator)
+        expect(e.to_a.size).to eq(3)
+      end
+
+      it 'supports lazy take via Enumerator chaining' do
+        expr = described_class.new('*/15 * * * *')
+        from = Time.new(2026, 4, 30, 9, 0, 0)
+        to = Time.new(2026, 4, 30, 12, 0, 0)
+        first_two = expr.each_in(from: from, to: to).first(2)
+        expect(first_two).to eq([
+                                  Time.new(2026, 4, 30, 9, 0, 0),
+                                  Time.new(2026, 4, 30, 9, 15, 0)
+                                ])
+      end
+
+      it 'raises when `to` is earlier than `from`' do
+        expr = described_class.new('@hourly')
+        from = Time.new(2026, 4, 30, 10, 0, 0)
+        to = Time.new(2026, 4, 30, 9, 0, 0)
+        expect { expr.each_in(from: from, to: to) { |_t| } }.to raise_error(Philiprehberger::CronParser::Error)
+      end
+    end
   end
 end

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-05-12
+
+### Added
+- `Expression#each_in(from:, to:, &block)` iterator over every matching occurrence in an inclusive window; returns an Enumerator when no block is given so callers can chain `Enumerable` methods like `first`, `take`, and `lazy`
+
 ## [0.4.0] - 2026-04-30
 
 ### Added
